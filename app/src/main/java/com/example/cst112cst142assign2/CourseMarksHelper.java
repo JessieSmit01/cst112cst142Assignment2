@@ -1,6 +1,6 @@
 package com.example.cst112cst142assign2;
 
-public class CourseMarksHrelper {
+public class CourseMarksHelper {
 
     public static final String DB_NAME = "Courses.db";
     public static final String TABLE_NAME = "CourseMarks";
