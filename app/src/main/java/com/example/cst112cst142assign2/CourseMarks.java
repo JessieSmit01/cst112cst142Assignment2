@@ -11,7 +11,7 @@ public class CourseMarks {
 
     public CourseMarks(String CourseMarks, String CourseCode, double weight, double mark)
     {
-        this,CourseMarks = CourseMarks
+        this.CourseMarks = CourseMarks;
         this.CourseCode = CourseCode;
         this.weight = weight;
         this.mark = mark;
