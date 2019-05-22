@@ -2,6 +2,7 @@ package com.example.cst112cst142assign2;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -12,90 +13,117 @@ public class CourseMarksHelper extends SQLiteOpenHelper {
     public static final String TABLE_NAME = "CourseMarks";
     public static final int DB_VERSION = 1;
     public static final String ID = "_id";
-    public static final String FINAL_MARK = "finalMark";
-    public static final String FINAL_WEIGHT = "finalWeight";
-    public static final String MIDTERM_MARK = "midtermMark";
-    public static final String MIDTERM_WEIGHT = "midtermWeight";
-    public static final String A1_MARK = "a1Mark";
-    public static final String A1_WEIGHT = "a1Weight";
-    public static final String A2_MARK = "a2Mark";
-    public static final String A2_WEIGHT = "a2Weight";
-    public static final String A3_MARK = "a3Mark";
-    public static final String A3_WEIGHT = "a3Weight";
-    public static final String A4_MARK = "a4Mark";
-    public static final String A4_WEIGHT = "a4Weight";
-    public static final String COURSEMARK = "coursemark";
-    public static final String COURSECODE = "coursecode";
+    public static final String COURSE_CODE = "courseCode";
+    public static final String EVALUATION = "courseCode";
+    public static final String MARK = "mark";
+    public static final String WEIGHT = "weight";
 
-    public SQLiteDatabase sqlDataBase;
 
-    public CourseMarksHelper(Context obContext)
+    public SQLiteDatabase sqlDB; // reference to the SQLite database on the file system
+
+    public CourseMarksHelper(Context context)
     {
-        super(obContext, DB_NAME,null,DB_VERSION);
+        // context is required to know where to create the db file
+        super(context, DB_NAME, null, DB_VERSION);
     }
 
     @Override
-    public void onCreate(SQLiteDatabase sqLiteDatabase) {
+    public void onCreate(SQLiteDatabase db) {
+        //Create table to hold in course marks for a single course
         String sCreate = "CREATE TABLE " +
                 TABLE_NAME + "(" +
-                ID + "integer primary key autoincrement, " +
-                COURSECODE + "String not null," +
-                COURSEMARK + "double, " +
-                FINAL_MARK + "double, " +
-                FINAL_WEIGHT + "double, " +
-                MIDTERM_MARK + "double, " +
-                MIDTERM_WEIGHT + "double, " +
-                A1_MARK + "double, " +
-                A1_WEIGHT + "double, " +
-                A2_MARK + "double, " +
-                A2_WEIGHT + "double, " +
-                A3_MARK + "double, " +
-                A3_WEIGHT + "double, " +
-                A4_MARK + "double, " +
-                A4_WEIGHT + "double);";
+                ID + " intger primary key autoincrement, " +
+                COURSE_CODE + " text not null, " +
+                EVALUATION + " text not null, " +
+                WEIGHT + " double not null, " +
+                MARK + " double not null);";
 
-    sqLiteDatabase.execSQL(sCreate);
+        db.execSQL(sCreate);
 
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
-
-        sqlDataBase.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
-        onCreate(sqLiteDatabase);
-
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        // called if the version increases
+        // drop existing table
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+        // recreate it
+        onCreate(db);
     }
 
-    public void onOpen() throws SQLException
+    public void open() throws SQLException
     {
-        sqlDataBase = this.getWritableDatabase();
+        sqlDB = this.getWritableDatabase();
     }
 
-    public void close() {
-        sqlDataBase.close();
+    public void close()
+    {
+        sqlDB.close();
     }
 
-    public long createCourseMarks(CourseMarks obCourseMarks)
+    public long createCourseMarks(CourseMark mark)
     {
         ContentValues cvs = new ContentValues();
+        cvs.put(COURSE_CODE, mark.CourseCode);
+        cvs.put(EVALUATION, mark.evaluation);
+        cvs.put(WEIGHT, mark.weight);
+        cvs.put(MARK, mark.mark);
 
-        cvs.put(COURSECODE, obCourseMarks.courseCode);
-        cvs.put(COURSEMARK, obCourseMarks.courseMark);
-        cvs.put(FINAL_MARK, obCourseMarks.finalMark);
-        cvs.put(FINAL_WEIGHT, obCourseMarks.finalWeight);
-        cvs.put(MIDTERM_MARK, obCourseMarks.midtermMark);
-        cvs.put(MIDTERM_WEIGHT, obCourseMarks.midtermWeight);
-        cvs.put(A1_MARK, obCourseMarks.a1Mark);
-        cvs.put(A1_WEIGHT, obCourseMarks.a1Weight);
-        cvs.put(A2_MARK, obCourseMarks.a2Mark);
-        cvs.put(A2_WEIGHT, obCourseMarks.a2Weight);
-        cvs.put(A3_MARK, obCourseMarks.a3Mark);
-        cvs.put(A3_WEIGHT, obCourseMarks.a3Weight);
-        cvs.put(A4_MARK, obCourseMarks.a4Mark);
-        cvs.put(A4_WEIGHT, obCourseMarks.a4Weight);
 
-        long autoid = sqlDataBase.insert(TABLE_NAME, null, cvs);
+
+        // execute insert, which returns the auto increment value
+        long autoid = sqlDB.insert(TABLE_NAME, null, cvs);
+
+        // update the id of the purcahse with the new auto id
+        mark.id = autoid;
         return autoid;
+    }
+
+    public boolean updateMarks(CourseMark mark) {
+        if (mark.id < 0) // marks have never been saved, cannot update
+        {
+            return false;
+        } else {
+            // a container to store each column and value
+            ContentValues cvs = new ContentValues();
+
+            cvs.put(COURSE_CODE, mark.CourseCode);
+            cvs.put(EVALUATION, mark.evaluation);
+            cvs.put(WEIGHT, mark.weight);
+            cvs.put(MARK, mark.mark);
+
+            // add an item for each column and value
+
+
+            return sqlDB.update(TABLE_NAME, cvs, ID + " = " + mark.id, null) > 0;
+        }
+    }
+
+    public boolean deleteCourseMarks(CourseMark mark)
+    {
+        return sqlDB.delete(TABLE_NAME, ID + " = " + mark.id, null) > 0;
+    }
+
+    public Cursor getAllCourseMarks()
+    {
+
+        // list of columns to select and return
+        String[] sFields = new String [] {ID, COURSE_CODE, EVALUATION, WEIGHT, MARK};
+        return sqlDB.query(TABLE_NAME, sFields, null, null, null, null, null);
+    }
+
+    public CourseMark getCourseMark(long id)
+    {
+        // list of columns to select and return
+        String[] sFields = new String [] {ID, COURSE_CODE, EVALUATION, WEIGHT, MARK};
+        Cursor mCursor = sqlDB.query(TABLE_NAME, sFields, ID + " = " + id, null, null, null, null, null);
+        if(mCursor != null) // check for a found result
+        {
+            // move to the first record
+            mCursor.moveToFirst();
+            return new CourseMark(mCursor.getLong(0), mCursor.getString(1), mCursor.getString(2), mCursor.getDouble(3), mCursor.getDouble(4));
+        }
+        return null;
     }
 
 }
