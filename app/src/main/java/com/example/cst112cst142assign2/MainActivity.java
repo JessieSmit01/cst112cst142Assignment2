@@ -35,12 +35,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         Course obCcourse = new Course("CDBM190", "Database management", 1);
         db = new CourseDBHelper(this);
         refreshData();
-//        db.open();
+
+
+ //      db.open();
 //        db.createCourse(obCcourse);
 //
 //        db.close();
 
-//        CourseMarksHelper obMarks = new CourseMarksHelper(this);
+ //       CourseMarksHelper obMarks = new CourseMarksHelper(this);
 //        obMarks.open();
 //        obMarks.createCourseMarks(new CourseMark("CDBM190", "Final", 40, 90));
 //
