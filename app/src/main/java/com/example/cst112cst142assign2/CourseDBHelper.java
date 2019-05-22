@@ -53,6 +53,7 @@ public class CourseDBHelper extends SQLiteOpenHelper {
 
     public long createCourse(Course course)
     {
+
         // a container to store each column and value
         ContentValues cvs = new ContentValues();
 
@@ -60,6 +61,8 @@ public class CourseDBHelper extends SQLiteOpenHelper {
         cvs.put(COURSECODE, course.courseCode);
         cvs.put(NAME, course.sName);
         cvs.put(YEAR, course.sYear);
+
+
 
         // execute insert, which returns the auto increment value
         long autoid = sqlDB.insert(TABLE_NAME, null, cvs);
@@ -116,6 +119,9 @@ public class CourseDBHelper extends SQLiteOpenHelper {
         }
         return null;
     }
+
+
+
 }
 
 
