@@ -69,21 +69,16 @@
 
         android:layout_marginStart="8dp"
 
-        android:layout_marginTop="56dp"
-
         android:layout_marginEnd="8dp"
 
         android:ems="10"
-
         android:hint="Course Code"
-
         android:inputType="textPersonName"
-
+        app:layout_constraintBottom_toBottomOf="@+id/textView2"
         app:layout_constraintEnd_toEndOf="parent"
-
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/textView2"
-        app:layout_constraintTop_toBottomOf="@+id/spinner" />
+        app:layout_constraintTop_toTopOf="@+id/textView2" />
 
 
     <TextView
@@ -137,17 +132,15 @@
 
         android:layout_height="46dp"
 
-        android:layout_marginTop="36dp"
-
         android:ems="10"
-
+        android:focusable="auto"
         android:hint="Course Name"
-
         android:inputType="textPersonName"
+        app:layout_constraintBottom_toBottomOf="@+id/textView3"
         app:layout_constraintEnd_toEndOf="@+id/etCode"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/etCode"
-        app:layout_constraintTop_toBottomOf="@+id/etCode" />
+        app:layout_constraintTop_toTopOf="@+id/textView3" />
 
 
     <TextView
@@ -175,7 +168,7 @@
 
     <RadioGroup
 
-        android:id="@+id/radioGroup"
+        android:id="@+id/rdYear"
 
         android:layout_width="100dp"
 
@@ -192,7 +185,7 @@
 
         <RadioButton
 
-            android:id="@+id/radioButton"
+            android:id="@+id/rdY1"
 
             android:layout_width="wrap_content"
 
@@ -205,7 +198,7 @@
 
         <RadioButton
 
-            android:id="@+id/radioButton2"
+            android:id="@+id/rdY2"
 
             android:layout_width="wrap_content"
 
@@ -218,7 +211,7 @@
     </RadioGroup>
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/btnEdit"
         android:layout_width="213dp"
         android:layout_height="53dp"
         android:layout_marginStart="8dp"
@@ -227,39 +220,39 @@
         android:text="Edit Marks"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
+        app:layout_constraintTop_toBottomOf="@+id/rdYear" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/btnNew"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="44dp"
         android:layout_marginTop="48dp"
         android:text="New"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button2" />
+        app:layout_constraintTop_toBottomOf="@+id/btnEdit" />
 
     <Button
-        android:id="@+id/button4"
+        android:id="@+id/btnDelete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="48dp"
         android:layout_marginEnd="8dp"
         android:text="Delete"
-        app:layout_constraintEnd_toStartOf="@+id/button5"
-        app:layout_constraintStart_toEndOf="@+id/button3"
-        app:layout_constraintTop_toBottomOf="@+id/button2" />
+        app:layout_constraintEnd_toStartOf="@+id/btnSave"
+        app:layout_constraintStart_toEndOf="@+id/btnNew"
+        app:layout_constraintTop_toBottomOf="@+id/btnEdit" />
 
     <Button
-        android:id="@+id/button5"
+        android:id="@+id/btnSave"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="48dp"
         android:layout_marginEnd="40dp"
         android:text="Save"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button2" />
+        app:layout_constraintTop_toBottomOf="@+id/btnEdit" />
 
 
 </android.support.constraint.ConstraintLayout>

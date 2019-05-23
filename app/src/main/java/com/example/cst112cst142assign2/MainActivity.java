@@ -37,12 +37,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         refreshData();
 
 
-        //      db.open();
+ //      db.open();
 //        db.createCourse(obCcourse);
 //
 //        db.close();
 
-        //       CourseMarksHelper obMarks = new CourseMarksHelper(this);
+ //       CourseMarksHelper obMarks = new CourseMarksHelper(this);
 //        obMarks.open();
 //        obMarks.createCourseMarks(new CourseMark("CDBM190", "Final", 40, 90));
 //
@@ -89,4 +89,3 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     }
 }
-

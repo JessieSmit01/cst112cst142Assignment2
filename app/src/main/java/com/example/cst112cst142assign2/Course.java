@@ -15,7 +15,7 @@ public class Course {
     }
     public Course(Long id, String courseCode, String sName, int sYear)
     {
-        this.id = -1;
+        this.id = id;
         this.courseCode = courseCode;
         this.sName = sName;
         this.sYear = sYear;
