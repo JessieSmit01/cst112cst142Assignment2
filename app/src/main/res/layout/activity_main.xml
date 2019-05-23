@@ -177,7 +177,7 @@
 
     <RadioGroup
 
-        android:id="@+id/radioGroup"
+        android:id="@+id/rdYear"
 
         android:layout_width="100dp"
 
@@ -194,7 +194,7 @@
 
         <RadioButton
 
-            android:id="@+id/radioButton"
+            android:id="@+id/rdY1"
 
             android:layout_width="wrap_content"
 
@@ -207,7 +207,7 @@
 
         <RadioButton
 
-            android:id="@+id/radioButton2"
+            android:id="@+id/rdY2"
 
             android:layout_width="wrap_content"
 
@@ -229,7 +229,7 @@
         android:text="Edit Marks"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
+        app:layout_constraintTop_toBottomOf="@+id/rdYear" />
 
     <Button
         android:id="@+id/btnNew"

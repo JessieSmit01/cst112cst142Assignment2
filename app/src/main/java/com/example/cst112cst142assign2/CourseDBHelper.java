@@ -22,6 +22,7 @@ public class CourseDBHelper extends SQLiteOpenHelper {
     {
         // context is required ot know where to create the db file
         super(context, DB_NAME, null, DB_VERSION);
+
     }
 
     @Override
@@ -33,6 +34,19 @@ public class CourseDBHelper extends SQLiteOpenHelper {
                 NAME + " text not null, " +
                 YEAR + " integer not null);";
         db.execSQL(sCreate);
+
+
+        //Need to create table for courseMarks because courseMarksHelper onCreate will not fire since the db will have already existed after this (CourseDBHelper) calls its onCreate method
+        sCreate = "CREATE TABLE IF NOT EXISTS " +
+                CourseMarksHelper.TABLE_NAME + "(" +
+                CourseMarksHelper.ID + " integer primary key autoincrement, " +
+                CourseMarksHelper.COURSE_CODE + " text not null, " +
+                CourseMarksHelper. EVALUATION + " text not null, " +
+                CourseMarksHelper. WEIGHT + " double, " +
+                CourseMarksHelper.MARK + " double);";
+
+        db.execSQL(sCreate);
+
     }
 
     @Override
@@ -95,10 +109,11 @@ public class CourseDBHelper extends SQLiteOpenHelper {
     public boolean deleteCourse(Course course)
     {
         return sqlDB.delete(TABLE_NAME, ID + " = " + course.id, null) > 0;
+
     }
 
 
-    public Cursor getAllFuelPurchases()
+    public Cursor getAllCourses()
     {
         // you may want to return a List of FuelPurchase items instead
         // list of columns to select and return
@@ -119,6 +134,9 @@ public class CourseDBHelper extends SQLiteOpenHelper {
         }
         return null;
     }
+
+
+
 
 
 

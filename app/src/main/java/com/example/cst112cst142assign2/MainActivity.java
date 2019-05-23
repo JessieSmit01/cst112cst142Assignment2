@@ -1,6 +1,7 @@
 package com.example.cst112cst142assign2;
 
 import android.database.Cursor;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -8,9 +9,12 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -23,6 +27,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private CourseDBHelper db;
     private CourseMarksHelper dbMarks;
     private Button btnEdit, btnSave, btnNew, btnDelete;
+    private RadioGroup rdYear;
+    private int currentYear;
+
+    private long id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +41,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         etCourseCode = findViewById(R.id.etCode);
         etName =findViewById(R.id.etName);
         spinner.setOnItemSelectedListener(this);
+        rdYear = findViewById(R.id.rdYear);
+
 
         btnEdit = findViewById(R.id.btnEdit);
         btnEdit.setOnClickListener(this);
@@ -43,19 +53,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         btnSave = findViewById(R.id.btnSave);
         btnSave.setOnClickListener(this);
 
-        Course obCcourse = new Course("CDBM190", "Database management", 1);
+
         db = new CourseDBHelper(this);
         dbMarks = new CourseMarksHelper(this);
+
         refreshData();
 
 
- //      db.open();
+//       db.open();
 //        db.createCourse(obCcourse);
 //
 //        db.close();
 
  //       CourseMarksHelper obMarks = new CourseMarksHelper(this);
-//        obMarks.open();
+
 //        obMarks.createCourseMarks(new CourseMark("CDBM190", "Final", 40, 90));
 //
 //        obMarks.close();
@@ -72,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     {
         // ensure the spinner has all of the rows from the table
         db.open();
-        cursor = db.getAllFuelPurchases(); // fill cursor
+        cursor = db.getAllCourses(); // fill cursor
 
         // the cursor adapter will be the link between the cursor and the spinner
         String [] cols = new String[] {db.COURSECODE}; // this is a list of columns to show on the view (spinner)
@@ -90,9 +101,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         // get the data from the cursor which has been moved by the adapter to point to the selected item
+
         etCourseCode.setText(cursor.getString(1));
         etName.setText(cursor.getString(2));
+        this.id = cursor.getLong(0);
+        this.currentYear = cursor.getInt(3);
 
+        if(this.currentYear == 2)
+        {
+            ((RadioButton)findViewById(R.id.rdY2)).setChecked(true);
+        }
+        else
+        {
+            ((RadioButton)findViewById(R.id.rdY1)).setChecked(true);
+        }
 
     }
 
@@ -115,21 +137,69 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void onClick(View view) {
-
+        Course obCourse;
 
         switch(view.getId())
         {
+
             case R.id.btnEdit:
                 etCourseCode.setFocusableInTouchMode(true);
                 etName.setFocusableInTouchMode(true);
+
                 break;
             case R.id.btnNew:
-                etCourseCode.setText("");
-                etName.setText("");
-                etCourseCode.setFocusableInTouchMode(true);
-                etName.setFocusableInTouchMode(true);
+                clearFields();
                 break;
+            case R.id.btnDelete:
+                db.open();
+                dbMarks.open();
+                obCourse = new Course(id, etCourseCode.getText().toString(), etName.getText().toString(), this.currentYear);
+                db.deleteCourse(obCourse);
+                dbMarks.deleteCourseMarks(obCourse);
+                clearFields();
+                db.close();
+                dbMarks.close();
+                break;
+            case R.id.btnSave:
+                db.open();
+                obCourse = getCourseFromFields();
+                if(obCourse != null)
+                {
+                    db.open();
+                    db.createCourse(obCourse);
+                    createMarksForCourse(obCourse.courseCode);
+                    db.close();
+                    refreshData();
+                }
 
+
+
+
+        }
+    }
+
+    public void clearFields()
+    {
+        etCourseCode.setText("");
+        etName.setText("");
+        etCourseCode.setFocusableInTouchMode(true);
+        etName.setFocusableInTouchMode(true);
+        rdYear.clearCheck();
+    }
+
+    public Course getCourseFromFields()
+    {
+        int yearSelectedId = rdYear.getCheckedRadioButtonId();
+        int currentYear;
+        if(yearSelectedId == -1)
+        {
+            Toast.makeText(this, "Please select a year", Toast.LENGTH_SHORT).show();
+            return null;
+        }
+        else {
+            RadioButton obSelected = findViewById(yearSelectedId);
+            currentYear = obSelected.equals(findViewById(R.id.rdY1)) ? 1 : 2;
+            return new Course(this.etCourseCode.getText().toString(), this.etName.getText().toString(), currentYear);
         }
     }
 }
