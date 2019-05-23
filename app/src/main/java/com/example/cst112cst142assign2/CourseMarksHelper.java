@@ -101,7 +101,8 @@ public class CourseMarksHelper extends SQLiteOpenHelper {
 
     public boolean deleteCourseMarks(Course course)
     {
-        return sqlDB.delete(TABLE_NAME, COURSE_CODE + " = " + course.courseCode, null) > 0;
+       // return sqlDB.delete(TABLE_NAME, COURSE_CODE + " = " + course.courseCode, null) > 0;
+        return sqlDB.delete(TABLE_NAME, COURSE_CODE + " = " + "'" + course.courseCode + "'", null) > 0;
     }
 
     public Cursor getAllCourseMarks()

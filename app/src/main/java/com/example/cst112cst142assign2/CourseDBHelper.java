@@ -108,7 +108,7 @@ public class CourseDBHelper extends SQLiteOpenHelper {
 
     public boolean deleteCourse(Course course)
     {
-        return sqlDB.delete(TABLE_NAME, ID + " = " + course.id, null) > 0;
+        return sqlDB.delete(TABLE_NAME, COURSECODE + " = " +  "'" + course.courseCode + "'", null) > 0;
 
     }
 

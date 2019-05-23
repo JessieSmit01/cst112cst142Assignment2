@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private RadioGroup rdYear;
     private int currentYear;
 
-    private long id;
+    private long id = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,10 +101,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         // get the data from the cursor which has been moved by the adapter to point to the selected item
-
+        this.id = cursor.getLong(0);
         etCourseCode.setText(cursor.getString(1));
         etName.setText(cursor.getString(2));
-        this.id = cursor.getLong(0);
+
         this.currentYear = cursor.getInt(3);
 
         if(this.currentYear == 2)
@@ -157,17 +157,26 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 db.deleteCourse(obCourse);
                 dbMarks.deleteCourseMarks(obCourse);
                 clearFields();
+                refreshData();
                 db.close();
                 dbMarks.close();
+
                 break;
             case R.id.btnSave:
                 db.open();
                 obCourse = getCourseFromFields();
-                if(obCourse != null)
+                if(obCourse != null && this.id == -1)
                 {
                     db.open();
                     db.createCourse(obCourse);
                     createMarksForCourse(obCourse.courseCode);
+                    db.close();
+                    refreshData();
+                }
+                else
+                {
+                    db.open();
+                    db.updateCourse(obCourse);
                     db.close();
                     refreshData();
                 }
@@ -185,6 +194,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         etCourseCode.setFocusableInTouchMode(true);
         etName.setFocusableInTouchMode(true);
         rdYear.clearCheck();
+        this.id = -1;
     }
 
     public Course getCourseFromFields()
@@ -197,9 +207,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             return null;
         }
         else {
-            RadioButton obSelected = findViewById(yearSelectedId);
-            currentYear = obSelected.equals(findViewById(R.id.rdY1)) ? 1 : 2;
-            return new Course(this.etCourseCode.getText().toString(), this.etName.getText().toString(), currentYear);
+            if(this.id == -1)
+            {
+                RadioButton obSelected = findViewById(yearSelectedId);
+                currentYear = obSelected.equals(findViewById(R.id.rdY1)) ? 1 : 2;
+                return new Course(this.etCourseCode.getText().toString(), this.etName.getText().toString(), currentYear);
+            }
+            else
+            {
+                RadioButton obSelected = findViewById(yearSelectedId);
+                currentYear = obSelected.equals(findViewById(R.id.rdY1)) ? 1 : 2;
+                return new Course(this.id, this.etCourseCode.getText().toString(), this.etName.getText().toString(), currentYear);
+            }
+
         }
     }
 }
