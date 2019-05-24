@@ -47,9 +47,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Intent i = new Intent(this, MarkActivity.class);
-        startActivity(i);
-
 
         spinner = findViewById(R.id.spinner);
         etCourseCode = findViewById(R.id.etCode);
@@ -174,6 +171,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             case R.id.btnEdit:
                 Intent i = new Intent(this, MarkActivity.class);
+                i.putExtra("coursecode", this.etCourseCode.getText().toString());
                 MainActivity.this.startActivity(i);
 
                 break;

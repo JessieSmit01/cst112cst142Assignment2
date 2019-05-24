@@ -105,12 +105,12 @@ public class CourseMarksHelper extends SQLiteOpenHelper {
         return sqlDB.delete(TABLE_NAME, COURSE_CODE + " = " + "'" + course.courseCode + "'", null) > 0;
     }
 
-    public Cursor getAllCourseMarks()
+    public Cursor getAllCourseMarksByCourseCode(String sCourseCode)
     {
 
         // list of columns to select and return
         String[] sFields = new String [] {ID, COURSE_CODE, EVALUATION, WEIGHT, MARK};
-        return sqlDB.query(TABLE_NAME, sFields, null, null, null, null, null);
+        return sqlDB.query(TABLE_NAME, sFields, COURSE_CODE + " = " + "'" + sCourseCode + "'", null, null, null, null);
     }
 
     public CourseMark getCourseMark(long id)

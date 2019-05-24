@@ -1,11 +1,13 @@
 package com.example.cst112cst142assign2;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -22,19 +24,19 @@ public class adapter extends ArrayAdapter<CourseMark> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent)
     {
-        CourseMark courseMark = this.getItem(position);
+        final CourseMark courseMark = this.getItem(position);
         View locationItemView = convertView;
         if(convertView == null)
         {
             LayoutInflater layoutInflater = (LayoutInflater) this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             locationItemView = layoutInflater.inflate(R.layout.listview_row, parent,false);
-            locationItemView.setOnClickListener(new View.OnClickListener(){
+            //locationItemView.setOnClickListener(new View.OnClickListener(){
 
-                @Override
-                public void onClick(View view) {
-
-                }
-            });
+//                @Override
+//                public void onClick(View view) {
+//
+//                }
+            //});
 
             tvMark = locationItemView.findViewById(R.id.etMark);
             tvWeight = locationItemView.findViewById(R.id.etWeight);
