@@ -2,11 +2,15 @@ package com.example.cst112cst142assign2;
 
 import android.content.Intent;
 import android.database.Cursor;
+
 import android.provider.MediaStore;
+
+
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -33,15 +37,25 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private long id = -1;
 
+
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Intent i = new Intent(this, MarkActivity.class);
+        startActivity(i);
+
+
         spinner = findViewById(R.id.spinner);
         etCourseCode = findViewById(R.id.etCode);
         etName =findViewById(R.id.etName);
         spinner.setOnItemSelectedListener(this);
+
         rdYear = findViewById(R.id.rdYear);
 
 
@@ -62,12 +76,23 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
 //       db.open();
+
+
+        Course obCcourse = new Course("CDBM190", "Database management", 1);
+        db = new CourseDBHelper(this);
+        refreshData();
+
+
+        //      db.open();
+
 //        db.createCourse(obCcourse);
 //
 //        db.close();
 
  //       CourseMarksHelper obMarks = new CourseMarksHelper(this);
 
+        //       CourseMarksHelper obMarks = new CourseMarksHelper(this);
+//        obMarks.open();
 //        obMarks.createCourseMarks(new CourseMark("CDBM190", "Final", 40, 90));
 //
 //        obMarks.close();
@@ -85,6 +110,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         // ensure the spinner has all of the rows from the table
         db.open();
         cursor = db.getAllCourses(); // fill cursor
+      //  cursor = db.getAllFuelPurchases(); // fill cursor
 
         // the cursor adapter will be the link between the cursor and the spinner
         String [] cols = new String[] {db.COURSECODE}; // this is a list of columns to show on the view (spinner)
@@ -116,6 +142,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         {
             ((RadioButton)findViewById(R.id.rdY1)).setChecked(true);
         }
+        etCourseCode.setText(cursor.getString(1));
+        etName.setText(cursor.getString(2));
+
 
     }
 
@@ -227,5 +256,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
 
         }
+
     }
 }
+
