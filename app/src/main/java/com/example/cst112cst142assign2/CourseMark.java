@@ -29,7 +29,7 @@ public class CourseMark {
     @Override
     public String toString()
     {
-        return String.format("%s\tW:%d  Mark:%d", this.evaluation, this.weight, this.mark);
+            return evaluation + weight + mark;
     }
 
 

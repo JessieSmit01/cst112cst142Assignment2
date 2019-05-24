@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -19,19 +20,18 @@ public class MarkActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Toast.makeText(this, "Hello", Toast.LENGTH_SHORT).show();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mark);
         courseMarks = new ArrayList<CourseMark>();
+        courseMarks.add(new CourseMark("Simon", "Simon", 5.5, 5.5));
         getMarks();
-        adapter arrayAdapter = new adapter(this, R.layout.listview_row, courseMarks);
+        adapter arrayAdapter = new adapter(this, courseMarks);
         lv = (ListView)findViewById(R.id.listView);
 
 
-        tvWeight = findViewById(R.id.etWeight);
-        tvMark = findViewById(R.id.etMark);
-        tvEval = findViewById(R.id.etEval);
-
         lv.setAdapter(arrayAdapter);
+
 
 
     }
