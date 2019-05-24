@@ -144,7 +144,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         {
 
             case R.id.btnEdit:
-
+                Intent i = new Intent(this, MarkActivity.class);
+                MainActivity.this.startActivity(i);
 
                 break;
             case R.id.btnNew:
