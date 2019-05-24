@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         spinner = findViewById(R.id.spinner);
         etCourseCode = findViewById(R.id.etCode);
         etName =findViewById(R.id.etName);
-        spinner.setOnItemSelectedListener(this);
+        //spinner.setOnItemSelectedListener(this);
         rdYear = findViewById(R.id.rdYear);
 
 
@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 //
 //        db.close();
 
- //       CourseMarksHelper obMarks = new CourseMarksHelper(this);
+        //       CourseMarksHelper obMarks = new CourseMarksHelper(this);
 
 //        obMarks.createCourseMarks(new CourseMark("CDBM190", "Final", 40, 90));
 //
