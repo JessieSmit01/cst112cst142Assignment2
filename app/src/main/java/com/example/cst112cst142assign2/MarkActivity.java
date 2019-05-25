@@ -6,19 +6,22 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class MarkActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+public class MarkActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, View.OnClickListener {
 
-    TextView tvWeight, tvEvalWeight;
-    TextView tvMark, tvEvalMark;
-    TextView tvEval;
-    TextView tvCourseCode;
-    String sCourseCode;
+    private EditText tvWeight;
+    private EditText tvMark;
+    private TextView tvEval, tvEvalWeight, tvEvalMark;
+    private TextView tvCourseCode;
+    private String sCourseCode;
+    private long currentMarkId;
+
 
     private ListView lv;
     CourseMarksHelper markHelper = new CourseMarksHelper(this);
@@ -78,7 +81,37 @@ public class MarkActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         CourseMark obCourseMark = courseMarks.get(i);
-        tvEvalWeight.setText(obCourseMark.evaluation);
-        tvEvalMark.setText(obCourseMark.evaluation);
+        tvEvalWeight.setText(obCourseMark.evaluation + " Weight:");
+        tvEvalMark.setText(obCourseMark.evaluation + " Mark:");
+        tvMark.setText(obCourseMark.mark + "");
+        tvWeight.setText(obCourseMark.weight + "");
+        this.currentMarkId = obCourseMark.id;
+    }
+
+
+
+    public void updateMark(int nPos, double nMark, double nWeight)
+    {
+        CourseMark obMark = courseMarks.get(nPos);
+        obMark.mark = nMark;
+        obMark.weight = nWeight;
+        markHelper.updateMarks(obMark);
+        Toast.makeText(this, "Changes Saves", Toast.LENGTH_SHORT).show();
+
+        //Next we need to update the marks in the listview
+        courseMarks = new ArrayList<>();
+        getMarks();
+        adapter newAdapter = new adapter(this, courseMarks);
+        lv.setAdapter(newAdapter);
+        adapter arrayAdapter = new adapter(this, courseMarks);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch(v.getId())
+        {
+            case R.id.btnSave:
+                updateMark((int)this.currentMarkId - 1, Double.parseDouble(tvMark.getText().toString()), Double.parseDouble(tvWeight.getText().toString()));
+        }
     }
 }
