@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private Button btnEdit, btnSave, btnNew, btnDelete;
     private RadioGroup rdYear;
     private int currentYear;
+    private int currentAvg;
 
     private long id = -1;
 
@@ -72,32 +73,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         refreshData();
 
 
-//       db.open();
-
-
         Course obCcourse = new Course("CDBM190", "Database management", 1);
         db = new CourseDBHelper(this);
         refreshData();
-
-
-        //      db.open();
-
-//        db.createCourse(obCcourse);
-//
-//        db.close();
-
- //       CourseMarksHelper obMarks = new CourseMarksHelper(this);
-
-        //       CourseMarksHelper obMarks = new CourseMarksHelper(this);
-//        obMarks.open();
-//        obMarks.createCourseMarks(new CourseMark("CDBM190", "Final", 40, 90));
-//
-//        obMarks.close();
-
-        //ArrayList<CourseMarks> arrayOfCourseMarks = new ArrayList<CourseMarks>();
-
-        //RowCursorAdapter adapter = new RowCursorAdapter(this, arrayOfCourseMarks);
-
 
 
     }
@@ -110,10 +88,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
       //  cursor = db.getAllFuelPurchases(); // fill cursor
 
         // the cursor adapter will be the link between the cursor and the spinner
-        String [] cols = new String[] {db.COURSECODE}; // this is a list of columns to show on the view (spinner)
-        int [] views = new int [] {android.R.id.text1}; // list of views to place the data
+        String [] cols = new String[] {db.COURSECODE, db.AVERAGE}; // this is a list of columns to show on the view (spinner)
+        int [] views = new int [] {R.id.text1, R.id.text2}; // list of views to place the data
 
-        SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_1, cursor, cols, views);
+        SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, R.layout.spinner_layout, cursor, cols, views);
 
         // assign the adapter to the spinner
         spinner.setAdapter(adapter);
@@ -141,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
         etCourseCode.setText(cursor.getString(1));
         etName.setText(cursor.getString(2));
-
+        this.currentAvg = cursor.getInt(4);
 
     }
 
@@ -171,7 +149,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             case R.id.btnEdit:
                 Intent i = new Intent(this, MarkActivity.class);
+                i.putExtra("courseid", this.id);
                 i.putExtra("coursecode", this.etCourseCode.getText().toString());
+                i.putExtra("name", this.etName.getText().toString());
+                i.putExtra("year", this.currentYear);
+                i.putExtra("average", this.currentAvg);
                 MainActivity.this.startActivity(i);
 
                 break;
@@ -181,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             case R.id.btnDelete:
                 db.open();
                 dbMarks.open();
-                obCourse = new Course(id, etCourseCode.getText().toString(), etName.getText().toString(), this.currentYear);
+                obCourse = new Course(id, etCourseCode.getText().toString(), etName.getText().toString(), this.currentYear, this.currentAvg);
                 db.deleteCourse(obCourse);
                 dbMarks.deleteCourseMarks(obCourse);
                 clearFields();
@@ -250,7 +232,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             {
                 RadioButton obSelected = findViewById(yearSelectedId);
                 currentYear = obSelected.equals(findViewById(R.id.rdY1)) ? 1 : 2;
-                return new Course(this.id, this.etCourseCode.getText().toString(), this.etName.getText().toString(), currentYear);
+                return new Course(this.id, this.etCourseCode.getText().toString(), this.etName.getText().toString(), currentYear, this.currentAvg);
             }
 
         }

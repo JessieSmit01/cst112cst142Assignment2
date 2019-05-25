@@ -19,9 +19,11 @@ public class MarkActivity extends AppCompatActivity implements AdapterView.OnIte
     private EditText tvMark;
     private TextView tvEval, tvEvalWeight, tvEvalMark;
     private TextView tvCourseCode;
-    private String sCourseCode;
+    private String sCourseCode, sCourseName;
+    private long courseId;
+    private int nYear, nAvg;
     private long currentMarkId;
-
+    private CourseDBHelper courseDB;
 
     private ListView lv;
     CourseMarksHelper markHelper = new CourseMarksHelper(this);
@@ -41,9 +43,13 @@ public class MarkActivity extends AppCompatActivity implements AdapterView.OnIte
 
         courseMarks = new ArrayList<CourseMark>();
         this.sCourseCode = getIntent().getStringExtra("coursecode");
+        this.sCourseName = getIntent().getStringExtra("name");
+        this.courseId = getIntent().getLongExtra("courseid", -1);
+        this.nYear = getIntent().getIntExtra("year", 0);
+        this.nAvg = getIntent().getIntExtra("average", 0);
         tvCourseCode = findViewById(R.id.txtCourseCode);
         tvCourseCode.setText(this.sCourseCode);
-
+        courseDB = new CourseDBHelper(this);
         getMarks();
         adapter arrayAdapter = new adapter(this, courseMarks);
         lv = findViewById(R.id.listView);
@@ -104,6 +110,8 @@ public class MarkActivity extends AppCompatActivity implements AdapterView.OnIte
         adapter newAdapter = new adapter(this, courseMarks);
         lv.setAdapter(newAdapter);
         adapter arrayAdapter = new adapter(this, courseMarks);
+
+        updateAverage();
     }
 
     @Override
@@ -113,5 +121,26 @@ public class MarkActivity extends AppCompatActivity implements AdapterView.OnIte
             case R.id.btnSave:
                 updateMark((int)this.currentMarkId - 1, Double.parseDouble(tvMark.getText().toString()), Double.parseDouble(tvWeight.getText().toString()));
         }
+    }
+
+    public void updateAverage()
+    {
+        Course obCourse = new Course(this.courseId, this.sCourseCode, this.sCourseName, this.nYear, this.nAvg);
+        int nNewAvg = 0;
+
+        for(CourseMark obMark : courseMarks)
+        {
+            nNewAvg += (obMark.weight/100) * obMark.mark;
+        }
+
+        obCourse.nAverage = nNewAvg;
+
+        courseDB.open();
+
+        courseDB.updateCourse(obCourse);
+
+        courseDB.close();
+
+
     }
 }
