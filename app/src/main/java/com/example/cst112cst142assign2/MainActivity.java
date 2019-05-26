@@ -3,8 +3,6 @@ package com.example.cst112cst142assign2;
 import android.content.Intent;
 import android.database.Cursor;
 
-import android.provider.MediaStore;
-
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,15 +11,11 @@ import android.widget.AdapterView;
 
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener {
@@ -63,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         btnNew.setOnClickListener(this);
         btnDelete = findViewById(R.id.btnDelete);
         btnDelete.setOnClickListener(this);
-        btnSave = findViewById(R.id.btnSave);
+        btnSave = findViewById(R.id.btnSave2);
         btnSave.setOnClickListener(this);
 
 
@@ -78,6 +72,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         refreshData();
 
 
+    }
+
+    @Override
+    public void onResume()
+    {  // After a pause OR at startup
+        super.onResume();
+        refreshData();
     }
 
     private void refreshData()
@@ -172,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 dbMarks.close();
 
                 break;
-            case R.id.btnSave:
+            case R.id.btnSave2:
                 db.open();
                 obCourse = getCourseFromFields();
                 if(obCourse != null && this.id == -1)

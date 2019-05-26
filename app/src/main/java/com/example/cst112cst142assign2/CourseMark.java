@@ -3,6 +3,7 @@ package com.example.cst112cst142assign2;
 public class CourseMark {
 
     public double weight, mark;
+    public int nPos;
 
     public String CourseCode, evaluation;
     public long id;

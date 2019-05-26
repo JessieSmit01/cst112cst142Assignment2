@@ -64,7 +64,7 @@
         android:layout_marginStart="84dp"
         android:layout_marginBottom="116dp"
         android:text="Final Weight:"
-        app:layout_constraintBottom_toTopOf="@+id/btnSave"
+        app:layout_constraintBottom_toTopOf="@+id/btnSave2"
         app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
@@ -95,7 +95,7 @@
         app:layout_constraintTop_toTopOf="@+id/evaluationMark" />
 
     <Button
-        android:id="@+id/btnSave"
+        android:id="@+id/btnSave2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
