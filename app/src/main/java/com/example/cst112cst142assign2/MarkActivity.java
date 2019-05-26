@@ -2,24 +2,22 @@ package com.example.cst112cst142assign2;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 
-public class MarkActivity extends AppCompatActivity {
+public class MarkActivity extends AppCompatActivity implements View.OnClickListener {
 
     EditText tvWeight;
     EditText tvMark;
@@ -27,17 +25,21 @@ public class MarkActivity extends AppCompatActivity {
     private ListView lv;
     int position;
     ArrayList<CourseMark> courseMarks;
+    CourseMarksHelper dbMarks;
+    Button obSave;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Toast.makeText(this, "Hello", Toast.LENGTH_SHORT).show();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mark);
 
+        obSave = (Button)findViewById(R.id.btnSaveMark);
+
     courseMarks = new ArrayList<CourseMark>();
 
+    dbMarks = new CourseMarksHelper(this);
+        getMarks("CDBM");
 
-        getMarks();
         final adapter arrayAdapter = new adapter(this, courseMarks, this);
         lv = (ListView)findViewById(R.id.listView);
         tvMark = (EditText) findViewById(R.id.mark);
@@ -50,6 +52,7 @@ public class MarkActivity extends AppCompatActivity {
 
         if(b != null)
         {
+            dbMarks.open();
             tvMark = (EditText) findViewById(R.id.mark);
             tvWeight = (EditText) findViewById(R.id.weight);
             String mark = (String) b.get("key");
@@ -60,9 +63,23 @@ public class MarkActivity extends AppCompatActivity {
 
             position = (int)b.get("position");
 
+            Cursor result = dbMarks.getAllCourseMarks();
+            if(result != null && result.moveToFirst())
+            {
+                do {
+                    if(result.getCount() == position)
+                    {
+                        dbMarks.updateMarks(courseMarks.get(position));
+                        dbMarks.getCourseMark(position).mark = Double.parseDouble(tvMark.getText().toString());
+                        arrayAdapter.getItem(1).mark = dbMarks.getCourseMark(position).mark;
+                    }
+
+                }while(result.moveToNext());
+            }
 
 
 
+            dbMarks.close();
         }
 
         tvMark.addTextChangedListener(new TextWatcher() {
@@ -169,20 +186,51 @@ public class MarkActivity extends AppCompatActivity {
 
 
 
-    public void getMarks()
-    {
-        CourseMark newCourse1 = new CourseMark("CDMB", "Final",3.2,2.2);
-        CourseMark newCourse2 = new CourseMark("CDMB", "Midterm",2.2,2.2);
-        CourseMark newCourse3 = new CourseMark("CDMB", "A1",2.2,2.2);
-        CourseMark newCourse4 = new CourseMark("CDMB", "A2",2.2,2.2);
-        CourseMark newCourse5 = new CourseMark("CDMB", "A3",2.2,2.2);
-        CourseMark newCourse6 = new CourseMark("CDMB", "A4",2.2,2.2);
-        courseMarks.add(newCourse1);
-        courseMarks.add(newCourse2);
-        courseMarks.add(newCourse3);
-        courseMarks.add(newCourse4);
-        courseMarks.add(newCourse5);
-        courseMarks.add(newCourse6);
+    public void getMarks(String CourseCode)
+    {      dbMarks.open();
 
+        Cursor result = dbMarks.getAllCourseMarks();
+
+
+
+        //dbMarks.getCourseMark(1);
+        if(result != null && result.moveToFirst())
+        {
+            int i = 1;
+            do {
+                courseMarks.add(dbMarks.getCourseMark(i));
+                i++;
+            }while (result.moveToNext());
+        }
+
+        dbMarks.close();
+
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch(view.getId())
+        {
+            case R.id.btnSaveMark:
+
+                dbMarks.open();
+
+                Cursor result = dbMarks.getAllCourseMarks();
+                if(result != null && result.moveToFirst())
+                {
+                    int i = 1;
+                    do {
+                       dbMarks.updateMarks(courseMarks.get(i-1));
+                        i++;
+                    }while (result.moveToNext());
+
+                }
+                dbMarks.close();
+
+                Intent i3 = new Intent(this, MainActivity.class);
+                startActivity(i3);
+
+
+        }
     }
 }

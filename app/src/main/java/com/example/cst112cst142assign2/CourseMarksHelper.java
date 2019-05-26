@@ -10,11 +10,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class CourseMarksHelper extends SQLiteOpenHelper {
 
     public static final String DB_NAME = "Courses.db";
-    public static final String TABLE_NAME = "CourseMarks";
+    public static final String TABLE_NAME = "courseMarks";
     public static final int DB_VERSION = 1;
     public static final String ID = "_id";
     public static final String COURSE_CODE = "courseCode";
-    public static final String EVALUATION = "courseCode";
+    public static final String EVALUATION = "evaluation";
     public static final String MARK = "mark";
     public static final String WEIGHT = "weight";
 
@@ -30,13 +30,13 @@ public class CourseMarksHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         //Create table to hold in course marks for a single course
-        String sCreate = "CREATE TABLE " +
+        String sCreate = "CREATE TABLE IF NOT EXISTS " +
                 TABLE_NAME + "(" +
-                ID + " intger primary key autoincrement, " +
+                ID + " integer primary key autoincrement, " +
                 COURSE_CODE + " text not null, " +
                 EVALUATION + " text not null, " +
-                WEIGHT + " double not null, " +
-                MARK + " double not null);";
+                WEIGHT + " double, " +
+                MARK + " double);";
 
         db.execSQL(sCreate);
 
@@ -79,6 +79,7 @@ public class CourseMarksHelper extends SQLiteOpenHelper {
         return autoid;
     }
 
+
     public boolean updateMarks(CourseMark mark) {
         if (mark.id < 0) // marks have never been saved, cannot update
         {
@@ -99,9 +100,10 @@ public class CourseMarksHelper extends SQLiteOpenHelper {
         }
     }
 
-    public boolean deleteCourseMarks(CourseMark mark)
+    public boolean deleteCourseMarks(Course course)
     {
-        return sqlDB.delete(TABLE_NAME, ID + " = " + mark.id, null) > 0;
+       // return sqlDB.delete(TABLE_NAME, COURSE_CODE + " = " + course.courseCode, null) > 0;
+        return sqlDB.delete(TABLE_NAME, COURSE_CODE + " = " + "'" + course.courseCode + "'", null) > 0;
     }
 
     public Cursor getAllCourseMarks()
@@ -125,5 +127,6 @@ public class CourseMarksHelper extends SQLiteOpenHelper {
         }
         return null;
     }
+
 
 }
