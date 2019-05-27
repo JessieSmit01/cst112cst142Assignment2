@@ -26,6 +26,10 @@ public class CourseDBHelper extends SQLiteOpenHelper {
 
     }
 
+    /**
+     * Create the two tables in the database
+     * @param db
+     */
     @Override
     public void onCreate(SQLiteDatabase db) {
         String sCreate = "CREATE TABLE " +
@@ -57,16 +61,28 @@ public class CourseDBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    /**
+     * This method will open the database so that we can read and write from it
+     * @throws SQLException
+     */
     public void open() throws SQLException
     {
         sqlDB = this.getWritableDatabase();
     }
 
+    /**
+     * This method closes the database so that no errors occur inside the database
+     */
     public void close()
     {
         sqlDB.close();
     }
 
+    /**
+     * This method will take in a new course and add it to the database
+     * @param course
+     * @return
+     */
     public long createCourse(Course course)
     {
 
@@ -89,6 +105,11 @@ public class CourseDBHelper extends SQLiteOpenHelper {
         return autoid;
     }
 
+    /**
+     * This method will take in an existing course and update its data in the table
+     * @param course
+     * @return
+     */
     public boolean updateCourse(Course course)
     {
         if(course.id < 0) // purchase has never been saved, cannot update
@@ -111,14 +132,21 @@ public class CourseDBHelper extends SQLiteOpenHelper {
     }
 
 
-
+    /**
+     * This method takes in a course and deletes the course from the table
+     * @param course
+     * @return
+     */
     public boolean deleteCourse(Course course)
     {
         return sqlDB.delete(TABLE_NAME, COURSECODE + " = " +  "'" + course.courseCode + "'", null) > 0;
 
     }
 
-
+    /**
+     * This method will return a cursor of all courses existing in the database
+     * @return
+     */
     public Cursor getAllCourses()
     {
         // you may want to return a List of FuelPurchase items instead

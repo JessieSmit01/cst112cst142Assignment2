@@ -1,5 +1,7 @@
 package com.example.cst112cst142assign2;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,7 +19,7 @@ public class MarkActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private EditText tvWeight;
     private EditText tvMark;
-    private TextView tvEval, tvEvalWeight, tvEvalMark;
+    private TextView tvEvalWeight, tvEvalMark;
     private TextView tvCourseCode;
     private String sCourseCode, sCourseName;
     private long courseId;
@@ -27,6 +29,7 @@ public class MarkActivity extends AppCompatActivity implements AdapterView.OnIte
     private int currentPos;
     Button btnStart;
 
+
     private ListView lv;
     CourseMarksHelper markHelper = new CourseMarksHelper(this);
     ArrayList<CourseMark> courseMarks;
@@ -34,11 +37,12 @@ public class MarkActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Toast.makeText(this, "Hello", Toast.LENGTH_SHORT).show();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mark);
         btnStart = findViewById(R.id.btnSave2);
         btnStart.setOnClickListener(this);
+
 
         this.tvMark = findViewById(R.id.mark);
         this.tvEvalMark = findViewById(R.id.evaluationMark);
@@ -46,6 +50,8 @@ public class MarkActivity extends AppCompatActivity implements AdapterView.OnIte
         this.tvEvalWeight = findViewById(R.id.evaluationWeight);
 
         courseMarks = new ArrayList<CourseMark>();
+
+        //grab the values passed through the intent and assign them to variables
         this.sCourseCode = getIntent().getStringExtra("coursecode");
         this.sCourseName = getIntent().getStringExtra("name");
         this.courseId = getIntent().getLongExtra("courseid", -1);
@@ -65,6 +71,11 @@ public class MarkActivity extends AppCompatActivity implements AdapterView.OnIte
 
     }
 
+
+    /**
+     * This method will go through the marks table and select all course marks that match this activites current sCourseCode value
+     * For each row retrieved it will create a CourseMark object and add it to the arraylist courseMarks
+     */
     public void getMarks()
     {
         markHelper.open();
@@ -78,7 +89,7 @@ public class MarkActivity extends AppCompatActivity implements AdapterView.OnIte
             cursor.moveToNext();
         }
 
-        //courseMarks.add(newCourse);
+
 
     }
 
@@ -89,9 +100,17 @@ public class MarkActivity extends AppCompatActivity implements AdapterView.OnIte
 //
 //    }
 
+    /**
+     * When a course is selected from the spinner of courses, this method will grab the courses data and fill in the text views and radio buttons based on the courses
+     * Saved data
+     * @param adapterView
+     * @param view
+     * @param i
+     * @param l
+     */
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        CourseMark obCourseMark = courseMarks.get(i);
+        CourseMark obCourseMark = courseMarks.get(i); //get the corresponding course mark and set the values into the "Edit marks" portion of the page
         tvEvalWeight.setText(obCourseMark.evaluation + " Weight:");
         tvEvalMark.setText(obCourseMark.evaluation + " Mark:");
         tvMark.setText(obCourseMark.mark + "");
@@ -101,7 +120,12 @@ public class MarkActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
 
-
+    /**
+     * This mark will update the current marks in the database to match the user's inputs
+     * @param nPos
+     * @param nMark
+     * @param nWeight
+     */
     public void updateMark(int nPos, double nMark, double nWeight)
     {
         CourseMark obMark = courseMarks.get(nPos);
@@ -111,24 +135,40 @@ public class MarkActivity extends AppCompatActivity implements AdapterView.OnIte
         Toast.makeText(this, "Changes Saves", Toast.LENGTH_SHORT).show();
 
         //Next we need to update the marks in the listview
+        //Refresh the listview
         courseMarks = new ArrayList<>();
         getMarks();
         adapter newAdapter = new adapter(this, courseMarks);
         lv.setAdapter(newAdapter);
         adapter arrayAdapter = new adapter(this, courseMarks);
 
-        updateAverage();
+        updateAverage(); //Update the average in the Course table to reflect the newly updates marks
     }
 
+    /**
+     * Get the buttons id that was clicked and complete the button's task
+     * @param v
+     */
     @Override
     public void onClick(View v) {
         switch(v.getId())
         {
             case R.id.btnSave2:
-                updateMark(this.currentPos, Double.parseDouble(tvMark.getText().toString()), Double.parseDouble(tvWeight.getText().toString()));
+                if(this.tvWeight.getText().toString().equals(""))
+                {
+                    Toast.makeText(this, "Mark must be selected before saving", Toast.LENGTH_SHORT).show(); //in case a user tries to save without selecting a mark
+                }
+                else {
+                    updateMark(this.currentPos, Double.parseDouble(tvMark.getText().toString()), Double.parseDouble(tvWeight.getText().toString())); //update selected marks
+                }
         }
     }
 
+    /**
+     * This method will be used to update the average in the Course table
+     * It will go through the arraylsit of courseMarks and calculate the average.
+     * It will then update the average in Course table
+     */
     public void updateAverage()
     {
         Course obCourse = new Course(this.courseId, this.sCourseCode, this.sCourseName, this.nYear, this.nAvg);
@@ -149,4 +189,6 @@ public class MarkActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
     }
+
+
 }

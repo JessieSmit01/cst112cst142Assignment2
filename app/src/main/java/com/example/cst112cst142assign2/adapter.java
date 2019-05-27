@@ -21,10 +21,17 @@ public class adapter extends ArrayAdapter<CourseMark> {
         super(context, R.layout.listview_row, objects);
     }
 
+    /**
+     * Take in the view and inflate the layout based on the data from the array of Coursemarks
+     * @param position
+     * @param convertView
+     * @param parent
+     * @return
+     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent)
     {
-        final CourseMark courseMark = this.getItem(position);
+        final CourseMark courseMark = this.getItem(position); //get the courseMark
         View locationItemView = convertView;
         if(convertView == null)
         {
@@ -37,7 +44,7 @@ public class adapter extends ArrayAdapter<CourseMark> {
 //
 //                }
             //});
-
+            //Set the listView views to match with a courseMark's data
             tvMark = locationItemView.findViewById(R.id.etMark);
             tvWeight = locationItemView.findViewById(R.id.etWeight);
             tvEval = locationItemView.findViewById(R.id.etEval);

@@ -50,7 +50,7 @@
         android:layout_width="wrap_content"
         android:layout_height="20dp"
         android:layout_marginTop="40dp"
-        android:text="Final Mark:"
+        android:text="Mark:"
         app:layout_constraintEnd_toEndOf="@+id/evaluationWeight"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/evaluationWeight"
@@ -63,7 +63,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="84dp"
         android:layout_marginBottom="116dp"
-        android:text="Final Weight:"
+        android:text="Weight:"
         app:layout_constraintBottom_toTopOf="@+id/btnSave2"
         app:layout_constraintStart_toStartOf="parent" />
 
