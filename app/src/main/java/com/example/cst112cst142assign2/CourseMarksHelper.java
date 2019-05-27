@@ -51,16 +51,28 @@ public class CourseMarksHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    /**
+     * This method will open the database so that we can write or read from it
+     * @throws SQLException
+     */
     public void open() throws SQLException
     {
         sqlDB = this.getWritableDatabase();
     }
 
+    /**
+     * This method closes the database so that data cannot be accidentally written or read
+     */
     public void close()
     {
         sqlDB.close();
     }
 
+    /**
+     * Method will table in a courseMark and write it to a new table row
+     * @param mark
+     * @return
+     */
     public long createCourseMarks(CourseMark mark)
     {
         ContentValues cvs = new ContentValues();
@@ -79,6 +91,11 @@ public class CourseMarksHelper extends SQLiteOpenHelper {
         return autoid;
     }
 
+    /**
+     * Method will be used to update aCoursemark with new data
+     * @param mark courseMark to be updated
+     * @return
+     */
     public boolean updateMarks(CourseMark mark) {
         if (mark.id < 0) // marks have never been saved, cannot update
         {
@@ -99,20 +116,39 @@ public class CourseMarksHelper extends SQLiteOpenHelper {
         }
     }
 
+
+    /**
+     * Takes in a course and deletes all courseMarks that math by CourseCodes
+     * @param course
+     * @return
+     */
     public boolean deleteCourseMarks(Course course)
     {
        // return sqlDB.delete(TABLE_NAME, COURSE_CODE + " = " + course.courseCode, null) > 0;
         return sqlDB.delete(TABLE_NAME, COURSE_CODE + " = " + "'" + course.courseCode + "'", null) > 0;
     }
 
-    public Cursor getAllCourseMarks()
+
+    /**
+     * This method will take in a course code and return a Curser of all rows from the courseMarks table
+     * that have a course code equal to the course code passed in
+     * @param sCourseCode
+     * @return
+     */
+    public Cursor getAllCourseMarksByCourseCode(String sCourseCode)
     {
 
         // list of columns to select and return
         String[] sFields = new String [] {ID, COURSE_CODE, EVALUATION, WEIGHT, MARK};
-        return sqlDB.query(TABLE_NAME, sFields, null, null, null, null, null);
+        return sqlDB.query(TABLE_NAME, sFields, COURSE_CODE + " = " + "'" + sCourseCode + "'", null, null, null, null);
     }
 
+
+    /**
+     * This method will be used to select one course code from a table
+     * @param id
+     * @return
+     */
     public CourseMark getCourseMark(long id)
     {
         // list of columns to select and return

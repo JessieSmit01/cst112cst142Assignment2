@@ -240,12 +240,12 @@
         android:layout_marginTop="48dp"
         android:layout_marginEnd="8dp"
         android:text="Delete"
-        app:layout_constraintEnd_toStartOf="@+id/btnSave"
+        app:layout_constraintEnd_toStartOf="@+id/btnSave2"
         app:layout_constraintStart_toEndOf="@+id/btnNew"
         app:layout_constraintTop_toBottomOf="@+id/btnEdit" />
 
     <Button
-        android:id="@+id/btnSave"
+        android:id="@+id/btnSave2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="48dp"

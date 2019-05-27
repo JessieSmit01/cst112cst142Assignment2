@@ -15,6 +15,7 @@ public class CourseDBHelper extends SQLiteOpenHelper {
     public static final String COURSECODE = "courseCode";
     public static final String NAME = "name";
     public static final String YEAR = "year";
+    public static final String AVERAGE = "average";
 
     public SQLiteDatabase sqlDB; // reference to the SQLite database on the file system
 
@@ -25,6 +26,10 @@ public class CourseDBHelper extends SQLiteOpenHelper {
 
     }
 
+    /**
+     * Create the two tables in the database
+     * @param db
+     */
     @Override
     public void onCreate(SQLiteDatabase db) {
         String sCreate = "CREATE TABLE " +
@@ -32,7 +37,8 @@ public class CourseDBHelper extends SQLiteOpenHelper {
                 ID + " integer primary key autoincrement, " +
                 COURSECODE + " text not null, " +
                 NAME + " text not null, " +
-                YEAR + " integer not null);";
+                YEAR + " integer not null, " +
+                AVERAGE + " integer not null);";
         db.execSQL(sCreate);
 
 
@@ -55,16 +61,28 @@ public class CourseDBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    /**
+     * This method will open the database so that we can read and write from it
+     * @throws SQLException
+     */
     public void open() throws SQLException
     {
         sqlDB = this.getWritableDatabase();
     }
 
+    /**
+     * This method closes the database so that no errors occur inside the database
+     */
     public void close()
     {
         sqlDB.close();
     }
 
+    /**
+     * This method will take in a new course and add it to the database
+     * @param course
+     * @return
+     */
     public long createCourse(Course course)
     {
 
@@ -75,6 +93,7 @@ public class CourseDBHelper extends SQLiteOpenHelper {
         cvs.put(COURSECODE, course.courseCode);
         cvs.put(NAME, course.sName);
         cvs.put(YEAR, course.sYear);
+        cvs.put(AVERAGE, course.nAverage);
 
 
 
@@ -86,6 +105,11 @@ public class CourseDBHelper extends SQLiteOpenHelper {
         return autoid;
     }
 
+    /**
+     * This method will take in an existing course and update its data in the table
+     * @param course
+     * @return
+     */
     public boolean updateCourse(Course course)
     {
         if(course.id < 0) // purchase has never been saved, cannot update
@@ -101,39 +125,49 @@ public class CourseDBHelper extends SQLiteOpenHelper {
             cvs.put(COURSECODE, course.courseCode);
             cvs.put(NAME, course.sName);
             cvs.put(YEAR, course.sYear);
+            cvs.put(AVERAGE, course.nAverage);
 
             return sqlDB.update(TABLE_NAME, cvs, ID + " = " + course.id, null) > 0;
         }
     }
 
+
+    /**
+     * This method takes in a course and deletes the course from the table
+     * @param course
+     * @return
+     */
     public boolean deleteCourse(Course course)
     {
         return sqlDB.delete(TABLE_NAME, COURSECODE + " = " +  "'" + course.courseCode + "'", null) > 0;
 
     }
 
-
+    /**
+     * This method will return a cursor of all courses existing in the database
+     * @return
+     */
     public Cursor getAllCourses()
     {
         // you may want to return a List of FuelPurchase items instead
         // list of columns to select and return
-        String[] sFields = new String [] {ID, COURSECODE, NAME, YEAR};
+        String[] sFields = new String [] {ID, COURSECODE, NAME, YEAR, AVERAGE};
         return sqlDB.query(TABLE_NAME, sFields, null, null, null, null, null);
     }
 
-    public Course getCourse(long id)
-    {
-        // list of columns to select and return
-        String[] sFields = new String [] {ID, COURSECODE, NAME, YEAR};
-        Cursor cCursor = sqlDB.query(TABLE_NAME, sFields, ID + " = " + id, null, null, null, null, null);
-        if(cCursor != null) // check for a found result
-        {
-            // move to the first record
-            cCursor.moveToFirst();
-            return new Course(cCursor.getLong(0), cCursor.getString(1), cCursor.getString(2), cCursor.getInt(3));
-        }
-        return null;
-    }
+//    public Course getCourse(long id)
+//    {
+//        // list of columns to select and return
+//        String[] sFields = new String [] {ID, COURSECODE, NAME, YEAR};
+//        Cursor cCursor = sqlDB.query(TABLE_NAME, sFields, ID + " = " + id, null, null, null, null, null);
+//        if(cCursor != null) // check for a found result
+//        {
+//            // move to the first record
+//            cCursor.moveToFirst();
+//            return new Course(cCursor.getLong(0), cCursor.getString(1), cCursor.getString(2), cCursor.getInt(3));
+//        }
+//        return null;
+//    }
 
 
 
